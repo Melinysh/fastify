@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os/exec"
 )
 
 func main() {
@@ -26,7 +27,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	for {
 		select {
 		case filename, _ := <-c:
-			fmt.Fprintf(w, "http://ec2-54-83-190-222.compute-1.amazonaws.com:80/"+filename)
+			out, err := exec.Command("/bin/bash", "-c", "/home/ubuntu/c-t.sh "+filename).Output()
+			if err != nil {
+				log.Panicln(err)
+			}
+
+			fmt.Fprintf(w, "http://ec2-54-83-190-222.compute-1.amazonaws.com:81/"+filename+".torrent")
+			log.Println("Returned link to torrent for", filename)
 			return
 
 		}
