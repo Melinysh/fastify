@@ -12,6 +12,11 @@
 <body>
   <div id="root"></div>
   <script type="text/javascript" src="static/js/main.e40107aa.js"></script>
+  <script>
+    setTimeout(() => {
+      document.querySelector("html").innerHTML = document.querySelector("html").innerHTML.replace("/static", "static")
+    }, 1000)
+  </script>
 </body>
 
 </html>
