@@ -13,9 +13,13 @@
   <div id="root"></div>
   <script type="text/javascript" src="static/js/main.e40107aa.js"></script>
   <script>
-    setTimeout(() => {
-      document.querySelector("img").src = "http://melinysh.me/fastify/static/media/favicon.baf707a1.png"
-    }, 1000)
+    // when youre really running low on time
+    var i = 0;
+    var handle = setInterval(function() {
+      i++;
+      document.querySelector("img").src = "http://melinysh.me/fastify/static/media/favicon.baf707a1.png";
+      if (i > 10) clearInterval(handle);
+    }, 250)
   </script>
 </body>
 
