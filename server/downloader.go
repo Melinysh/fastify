@@ -16,6 +16,7 @@ func Download(link string, ch chan string) {
 	if err != nil {
 		log.Println("ERROR: fetching link", link, err)
 		ch <- "ERROR"
+		return
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
@@ -25,6 +26,7 @@ func Download(link string, ch chan string) {
 	if err != nil {
 		log.Println("ERROR: enable to save file", link, len(body), err)
 		ch <- "ERROR"
+		return
 	}
 	log.Println("Got file saved", filename)
 	ch <- filename
