@@ -1,9 +1,8 @@
 package main
 
-// Main server of the cluster would run this and not worker.go.
+// A go program to run instead of main.go on the other worker servers in the cluster
 
 import (
-	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
@@ -28,21 +27,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		log.Panicln("reading response body", err)
 	}
 	log.Println(string(data))
-	b := bytes.NewReader(data)
-	go func() {
-		_, err = http.Post("http://ec2-54-84-75-4.compute-1.amazonaws.com:8080", "text/octet-stream", b)
-		if err != nil {
-			log.Println("error connecting to other server: (2)", err)
-		}
-	}()
-	b2 := bytes.NewReader(data)
-	go func() {
-		_, err = http.Post("http://ec2-52-206-125-141.compute-1.amazonaws.com:8080", "text/octet-stream", b2)
-		if err != nil {
-			log.Println("error connecting to other server (3) :", err)
-		}
-	}()
-
 	if _, err := os.Stat(Hash(string(data)) + ".torrent"); !os.IsNotExist(err) {
 		fmt.Fprintf(w, "http://ec2-54-83-190-222.compute-1.amazonaws.com:81/"+Hash(string(data))+".torrent")
 		log.Println("Returning cached value")
@@ -50,7 +34,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Panicln(err)
 		}
-
 		return
 	}
 	c := make(chan string)
@@ -63,9 +46,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				log.Panicln(err)
 			}
-
-			fmt.Fprintf(w, "http://ec2-54-83-190-222.compute-1.amazonaws.com:81/"+filename+".torrent")
-			log.Println("Returned link to torrent for", filename)
 			return
 		}
 	}
