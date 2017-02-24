@@ -51,7 +51,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Hash needed to be commenteded :(
+
 func Hash(s string) string {
 	h := sha256.New()
 	io.WriteString(h, s)
