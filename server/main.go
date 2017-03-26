@@ -29,7 +29,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Println(string(data))
 	b := bytes.NewReader(data)
-  
+
     // inform worker 1
 	go func() {
 		_, err = http.Post("http://ec2-54-84-75-4.compute-1.amazonaws.com:8080", "text/octet-stream", b)
@@ -47,7 +47,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
+
     // check cache for existing file 
+
 	if _, err := os.Stat(Hash(string(data)) + ".torrent"); !os.IsNotExist(err) {
 		fmt.Fprintf(w, "http://ec2-54-83-190-222.compute-1.amazonaws.com:81/"+Hash(string(data))+".torrent")
 		log.Println("Returning cached value")
